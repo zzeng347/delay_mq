@@ -11,3 +11,13 @@ type Service struct {
 	dao       *dao.Dao
 	Redis     *goredis.Client
 }
+
+// New new a Service and return.
+func New(c *conf.Config) (s *Service) {
+	s = &Service{
+		c:      c,
+		dao:    dao.New(c),
+	}
+	s.Redis = s.dao.Redis
+	return s
+}
