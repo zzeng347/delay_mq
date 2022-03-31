@@ -12,7 +12,7 @@ name="dq_bucket_%d"
 bucket_time=5000000000
 
 [http]
-address="0.0.0.0:8111"
+address="0.0.0.0:8112"
 
 [rpc]
 address="0.0.0.0:8972"
