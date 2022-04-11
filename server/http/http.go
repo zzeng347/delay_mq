@@ -2,8 +2,8 @@ package http
 
 import (
 	"delay_mq_v2/conf"
-	"delay_mq_v2/http/api"
 	"delay_mq_v2/library/net/http"
+	"delay_mq_v2/server/http/api"
 	"delay_mq_v2/service"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -25,6 +25,10 @@ func InitRouter() *gin.Engine {
 	gin.SetMode("debug")
 
 	r.GET("/", api.Hello)
+	r.GET("/push", api.Push)
+	r.GET("/pop", api.Pop)
+	r.GET("/finish", api.Finish)
+	r.GET("/delete", api.Delete)
 
 	return r
 }

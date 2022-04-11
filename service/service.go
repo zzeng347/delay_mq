@@ -27,5 +27,5 @@ func New(c *conf.Config) (s *Service) {
 
 func (s *Service) Run(ctx context.Context)  {
 	// init bucket
-	InitBucket(ctx, s)
+	go InitBucket(ctx, s)
 }

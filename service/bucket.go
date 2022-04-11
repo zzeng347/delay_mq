@@ -6,10 +6,10 @@ import (
 )
 
 const (
-	BUCKET_KEY = "dmq:bucket:%d"
-	TTR_BUCKET_KEY = "dmq:ttr_bucket:%d"
-	BUCKET_NUM = 5
-	TTR_BUCKET_NUM = 5
+	BucketKey    = "dmq:bucket:%d"
+	TtrBucketKey = "dmq:ttr_bucket:%d"
+	BucketNum    = 5
+	TtrBucketNum = 5
 )
 
 type Bucket struct {
@@ -18,8 +18,14 @@ type Bucket struct {
 
 func InitBucket(ctx context.Context, s *Service)  {
 	var bucketName string
-	for i := 0; i < BUCKET_NUM; i++ {
-		bucketName = fmt.Sprintf(BUCKET_KEY, i+1)
+	for i := 0; i < BucketNum; i++ {
+		bucketName = fmt.Sprintf(BucketKey, i+1)
+		// Init ticker
+		go InitTicker(ctx, bucketName, s)
+	}
+
+	for i := 0; i < TtrBucketNum; i++ {
+		bucketName = fmt.Sprintf(TtrBucketKey, i+1)
 		// Init ticker
 		go InitTicker(ctx, bucketName, s)
 	}

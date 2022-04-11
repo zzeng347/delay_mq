@@ -27,8 +27,7 @@ func InitTicker(ctx context.Context, bucketName string, s *Service)  {
 	for {
 		select {
 		case <-ticker.C:
-			fmt.Printf("ticker bucket name#%s\n", bucketName)
-			// tickHandler(t, bucketName)
+			tickHandler(bucketName)
 		case <-ctx.Done(): // 等待上级通知
 			log.Printf("context Done msg: %#v\n", ctx.Err())
 			return
@@ -36,4 +35,9 @@ func InitTicker(ctx context.Context, bucketName string, s *Service)  {
 			//fmt.Printf("default#%s\n", bucketName)
 		}
 	}
+}
+
+func tickHandler(bucketName string)  {
+	// 扫描bucket
+	fmt.Printf("ticker handler bucket name#%s\n", bucketName)
 }

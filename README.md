@@ -6,3 +6,9 @@
 5. http: 提供http服务, 主要是提供协议转换, 聚合. 逻辑还是再service层做.
 6. service: 提供服务和逻辑实现.
 7. grpc: 提供rpc服务.
+
+
+### TODO
+1. push api
+   * push逻辑
+   * 请求参数校验

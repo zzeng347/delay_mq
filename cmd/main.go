@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"delay_mq_v2/conf"
-	"delay_mq_v2/http"
+	"delay_mq_v2/server/http"
 	"delay_mq_v2/service"
 	"fmt"
 	"log"
