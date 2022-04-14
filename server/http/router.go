@@ -1,7 +1,9 @@
-package api
+package http
 
 import (
+	"delay_mq_v2/model"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"net/http"
 )
 
@@ -16,15 +18,22 @@ func Hello(c *gin.Context)  {
 }
 
 func Push(c *gin.Context) {
-	// 验证job_id唯一性
+	var (
+		err error
+		job *model.PushJobReq
+	)
 
-	// hash job_id 进bucket
+	if err = c.ShouldBindWith(&job, binding.JSON); err != nil {
+		Fail(c, err.Error())
+		return
+	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code" : 200,
-		"msg" : "ok",
-		"data" : "push",
-	})
+	if err = hSrv.PushJob(job); err != nil {
+		Fail(c, err.Error())
+		return
+	}
+	Success(c, job)
+	return
 }
 
 func Pop(c *gin.Context)  {

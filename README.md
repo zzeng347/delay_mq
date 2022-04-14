@@ -7,8 +7,15 @@
 6. service: 提供服务和逻辑实现.
 7. grpc: 提供rpc服务.
 
-
+### 队列查询命令
+1. bucket
+   * zrange dmq:bucket:2 0 -1 withscores
+2. pool
+   * get dmq:jobpool:1
+3. ready queue
+   * 
 ### TODO
 1. push api
    * push逻辑
-   * 请求参数校验
+2. ticker
+   * 扫描bucket

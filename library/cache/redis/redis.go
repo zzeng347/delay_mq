@@ -18,5 +18,9 @@ func NewMyRedis(c *Config) (rdb *goredis.Client) {
 		DB:        c.DB,
 		PoolSize:  20, // TODO 连接池大小
 	})
+	_, err := rdb.Ping().Result()
+	if err != nil {
+		panic(err)
+	}
 	return
 }
