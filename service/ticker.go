@@ -31,13 +31,52 @@ func InitTicker(ctx context.Context, bucketName string, s *Service)  {
 		case <-ctx.Done(): // 等待上级通知
 			log.Printf("context Done msg: %#v\n", ctx.Err())
 			return
-		default:
-			//fmt.Printf("default#%s\n", bucketName)
 		}
 	}
 }
 
 func tickHandler(bucketName string)  {
 	// 扫描bucket
-	fmt.Printf("ticker handler bucket name#%s\n", bucketName)
+	bItem, err := s.GetLatestJobFromBucket(bucketName)
+	if err != nil {
+		return
+	}
+
+	if bItem == nil {
+		return
+	}
+
+	if bItem.Timestamp > time.Now().Unix() {
+		fmt.Printf("%s next job time is %s\n", bucketName, time.Unix(bItem.Timestamp, 0).Format("2006-01-02 15:04:05"))
+		return
+	}
+
+	// 读取job
+	jobInfo, err := s.GetJob(bItem.JobId)
+	if err != nil {
+		return
+	}
+	if jobInfo == nil {
+		// 从bucket删除
+		err = s.RemoveBucketJob(bucketName, bItem.JobId)
+		if err != nil {
+			//
+		}
+		return
+	}
+	fmt.Printf("正在消费job#%v\n", jobInfo)
+
+	// 进queue
+	queueKey := s.GetQueueKey(bItem.JobId)
+	err = s.PushToQueue(queueKey, bItem.JobId)
+	if err != nil {
+		return
+	}
+
+	// 出bucket
+	err = s.RemoveBucketJob(bucketName, bItem.JobId)
+	if err != nil {
+		return
+	}
+	return
 }

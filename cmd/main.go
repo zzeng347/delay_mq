@@ -17,7 +17,7 @@ var (
 	srv *service.Service
 )
 
-func main()  {
+func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	err := conf.Init()
 	if err != nil {

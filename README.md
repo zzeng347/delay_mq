@@ -19,3 +19,7 @@
    * push逻辑
 2. ticker
    * 扫描bucket
+3. 日志组件
+4. pop api
+5. ack api
+6. delete api

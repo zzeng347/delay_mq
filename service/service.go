@@ -15,8 +15,10 @@ type Service struct {
 	wg sync.WaitGroup
 }
 
+var s *Service
+
 // New new a Service and return.
-func New(c *conf.Config) (s *Service) {
+func New(c *conf.Config) *Service {
 	s = &Service{
 		c:      c,
 		dao:    dao.New(c),

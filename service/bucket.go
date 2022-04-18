@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"delay_mq_v2/model"
 	"fmt"
 )
 
@@ -21,15 +22,14 @@ func InitBucket(ctx context.Context, s *Service)  {
 	for i := 0; i < BucketNum; i++ {
 		bucketName = GetBucketName(BucketKey, i+1)
 		// Init ticker
-		//go InitTicker(ctx, bucketName, s)
+		go InitTicker(ctx, bucketName, s)
 	}
 
 	for i := 0; i < TtrBucketNum; i++ {
 		bucketName = GetBucketName(TtrBucketKey, i+1)
 		// Init ticker
-		//go InitTicker(ctx, bucketName, s)
+		go InitTicker(ctx, bucketName, s)
 	}
-	fmt.Println(bucketName)
 }
 
 func GetBucketName(key string, num int) string {
@@ -48,4 +48,28 @@ func (s *Service) GetBucket(jobId string) (bucketName string) {
 
 func (s *Service) PushToBucket(bucket string, timestamp int64, jobId string) (err error) {
 	return s.dao.PushBucket(bucket, float64(timestamp), jobId)
+}
+
+// GetLatestJobFromBucket TODO 批量获取可执行job
+func (s *Service) GetLatestJobFromBucket(bucket string) (bItem *model.ZRangeBucketItem, err error) {
+	bItem = &model.ZRangeBucketItem{}
+
+	zRet, err := s.dao.ZRangeBucket(bucket, 0, 1)
+	if err != nil {
+		return
+	}
+
+	if len(zRet) < 1 {
+		return nil, nil
+	}
+
+	for _, z := range zRet {
+		bItem.JobId = z.Member.(string)
+		bItem.Timestamp = int64(z.Score)
+	}
+	return
+}
+
+func (s *Service) RemoveBucketJob(bucket string, jobId string) (err error) {
+	return s.dao.RemoveInBucket(bucket, jobId)
 }

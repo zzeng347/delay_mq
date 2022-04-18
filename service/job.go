@@ -20,10 +20,15 @@ func (s *Service) GetJobPoolKey(key string) string {
 	return fmt.Sprintf("%s%s", JobPoolKey, key)
 }
 
+func (s *Service) GetJob(jobId string) (j *model.PushJobReq, err error) {
+	poolKey := s.GetJobPoolKey(jobId)
+	j, err = s.dao.GetJob(poolKey)
+	return
+}
+
 func (s *Service) PushJob(job *model.PushJobReq) error {
 	// 验证job_id唯一性
-	poolKey := s.GetJobPoolKey(job.Id)
-	jobInfo, err := s.dao.GetJob(poolKey)
+	jobInfo, err := s.GetJob(job.Id)
 	if err == redis.Nil {
 
 	} else if err != nil {
@@ -34,9 +39,10 @@ func (s *Service) PushJob(job *model.PushJobReq) error {
 
 	// hash job_id get bucket name
 	bucketName := s.GetBucket(job.Id)
-	fmt.Printf("push to ttr bucket name#%s\n", bucketName)
+	fmt.Printf("push to bucket name#%s\n", bucketName)
 
 	// set job pool
+	poolKey := s.GetJobPoolKey(job.Id)
 	err = s.dao.SetJob(poolKey, job)
 	if err != nil {
 		return err

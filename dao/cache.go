@@ -35,3 +35,17 @@ func (dao *Dao) PushBucket(bucket string, timestamp float64, jobId string) (err 
 	return
 }
 
+func (dao *Dao) ZRangeBucket(bucket string, start, stop int64) (ret []redis.Z, err error) {
+	ret, err = dao.Redis.ZRangeWithScores(bucket, start, stop).Result()
+	return
+}
+
+func (dao *Dao) PushQueue(queue string, jobId string) (err error) {
+	_, err = dao.Redis.RPush(queue, jobId).Result()
+	return
+}
+
+func (dao *Dao) RemoveInBucket(bucket string, jobId string) (err error) {
+	_, err = dao.Redis.ZRem(bucket, jobId).Result()
+	return
+}
