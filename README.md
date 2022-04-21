@@ -19,7 +19,9 @@
    * push逻辑
 2. ticker
    * 扫描bucket
-3. 日志组件
-4. pop api
-5. ack api
-6. delete api
+3. ~~日志组件~~
+   * 按天分割
+4. 消费者
+5. 消费次数限制
+6. ack api
+7. delete api

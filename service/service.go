@@ -30,4 +30,7 @@ func New(c *conf.Config) *Service {
 func (s *Service) Run(ctx context.Context)  {
 	// init bucket
 	go InitBucket(ctx, s)
+
+	// init consumer
+	go s.InitConsumer(ctx)
 }

@@ -49,3 +49,8 @@ func (dao *Dao) RemoveInBucket(bucket string, jobId string) (err error) {
 	_, err = dao.Redis.ZRem(bucket, jobId).Result()
 	return
 }
+
+func (dao *Dao) PopQueue(queue string) (jobIds []string, err error) {
+	jobIds, err = dao.Redis.BLPop(0, queue).Result()
+	return
+}

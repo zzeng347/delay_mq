@@ -46,6 +46,16 @@ func (s *Service) GetBucket(jobId string) (bucketName string) {
 	return
 }
 
+func (s *Service) GetTtrBucket(jobId string) (bucketName string) {
+	hashId := FnvHash32(jobId)
+	modulo := hashId%TtrBucketNum
+	if modulo == 0 {
+		modulo = TtrBucketNum
+	}
+	bucketName = GetBucketName(TtrBucketKey, int(modulo))
+	return
+}
+
 func (s *Service) PushToBucket(bucket string, timestamp int64, jobId string) (err error) {
 	return s.dao.PushBucket(bucket, float64(timestamp), jobId)
 }

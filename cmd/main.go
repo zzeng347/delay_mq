@@ -32,11 +32,11 @@ func main() {
 	signal.Notify(c, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 	for {
 		s := <-c
-		log.Printf("delay mq service get a signal %s", s.String())
+		log.Printf("dmq service get a signal %s", s.String())
 		switch s {
 		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
 			cancel()
-			log.Printf("delay mq service exit")
+			log.Printf("dmq service exit")
 			time.Sleep(time.Second)
 			return
 		case syscall.SIGHUP:

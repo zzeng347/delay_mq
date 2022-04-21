@@ -1,5 +1,5 @@
 [redis]
-host="192.168.10.172"
+host="192.168.11.80"
 port="6379"
 password=""
 db=0

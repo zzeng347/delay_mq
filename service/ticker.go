@@ -29,7 +29,7 @@ func InitTicker(ctx context.Context, bucketName string, s *Service)  {
 		case <-ticker.C:
 			tickHandler(bucketName)
 		case <-ctx.Done(): // 等待上级通知
-			log.Printf("context Done msg: %#v\n", ctx.Err())
+			log.Printf("ticker Done msg: %#v\n", ctx.Err())
 			return
 		}
 	}
@@ -47,7 +47,7 @@ func tickHandler(bucketName string)  {
 	}
 
 	if bItem.Timestamp > time.Now().Unix() {
-		fmt.Printf("%s next job time is %s\n", bucketName, time.Unix(bItem.Timestamp, 0).Format("2006-01-02 15:04:05"))
+		fmt.Printf("next job, bucket#%s, job id#%s, time#%s\n", bucketName, bItem.JobId, time.Unix(bItem.Timestamp, 0).Format("2006-01-02 15:04:05"))
 		return
 	}
 
@@ -64,10 +64,10 @@ func tickHandler(bucketName string)  {
 		}
 		return
 	}
-	fmt.Printf("正在消费job#%v\n", jobInfo)
+	//fmt.Printf("正在消费job#%v\n", jobInfo)
 
 	// 进queue
-	queueKey := s.GetQueueKey(bItem.JobId)
+	queueKey := s.GetQueueKey()
 	err = s.PushToQueue(queueKey, bItem.JobId)
 	if err != nil {
 		return
