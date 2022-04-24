@@ -5,11 +5,15 @@ import (
 )
 
 const (
-	QueueKey = "dmq:queue"
+	QueuePrefix = "dmq:queue:"
 )
 
-func (s *Service) GetQueueKey() string {
-	return fmt.Sprintf("%s", QueueKey)
+var (
+	QueueContainer = map[string]string{"container1":"container1", "container2":"container2"}
+)
+
+func (s *Service) GetQueueKey(container string) string {
+	return fmt.Sprintf("%s%s", QueuePrefix, container)
 }
 
 func (s *Service) PushToQueue(queue string, jobId string) (err error) {

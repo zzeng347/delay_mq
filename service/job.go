@@ -53,6 +53,11 @@ func (s *Service) DelJob(jobId string) (err error) {
 }
 
 func (s *Service) PushJob(job *model.PushJobReq) error {
+	// 验证container
+	if _, ok := QueueContainer[job.Container]; !ok {
+		return errors.New("container error")
+	}
+	
 	// 验证job_id唯一性
 	jobInfo, err := s.GetJob(job.Id)
 	if err == redis.Nil {

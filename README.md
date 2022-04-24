@@ -15,14 +15,15 @@
 3. ready queue
    * 
 ### TODO
-1. push api
-   * push逻辑
-2. ticker
-   * 扫描bucket
-3. ~~日志组件~~
+1. ~~push api~~
+   * ~~push逻辑~~
+2. ~~ticker~~
+   * ~~扫描bucket~~
+3. 日志组件
    * 按天分割
-4. 消费者
-5. http client
+4. ~~消费者~~
+5. ~~http client~~
 5. 消费次数限制
+5. container参数验证
 6. ack api
 7. delete api

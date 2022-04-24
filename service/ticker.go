@@ -67,7 +67,7 @@ func tickHandler(bucketName string)  {
 	//fmt.Printf("正在消费job#%v\n", jobInfo)
 
 	// 进queue
-	queueKey := s.GetQueueKey()
+	queueKey := s.GetQueueKey(jobInfo.Container)
 	err = s.PushToQueue(queueKey, bItem.JobId)
 	if err != nil {
 		return

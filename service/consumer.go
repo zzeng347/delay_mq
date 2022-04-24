@@ -17,45 +17,48 @@ const (
 var ch chan string
 
 func (s *Service) InitConsumer(ctx context.Context)  {
-	defer func() {
-		s.wg.Done()
-	}()
-	s.wg.Add(1)
-
 	ch = make(chan string, 1000)
 
 	// 取通道job推送给业务方
 	go s.consume(ctx)
 
 	// 取队列消息进通道
-	for {
-		queueKey := s.GetQueueKey()
-		// jobIds = [queueKey, jobId]
-		jobIds, err := s.PopFromQueue(queueKey)
-		if err != nil {
-			return
-		}
-		if len(jobIds) < 1 {
-			return
-		}
+	for i, _ := range QueueContainer {
+		go func(i string) {
+			defer func() {
+				s.wg.Done()
+			}()
+			s.wg.Add(1)
 
-		jobId := jobIds[1]
-		
-		select {
-		case ch <- jobId:
-			fmt.Printf("chan <- #%s#\n", jobId)
-			time.Sleep(5e8)
-		case <-ctx.Done(): // 等待上级通知
-			log.Printf("pop from queue Done msg: %#v", ctx.Err())
-			return
-		}
+			queueKey := s.GetQueueKey(i)
+			fmt.Printf("consumer queue container#%s\n", queueKey)
+			// jobIds = [queueKey, jobId]
+			jobIds, err := s.PopFromQueue(queueKey)
+			if err != nil {
+				return
+			}
+			if len(jobIds) < 1 {
+				return
+			}
+
+			jobId := jobIds[1]
+
+			select {
+			case ch <- jobId:
+				fmt.Printf("%s chan <- #%s#\n", queueKey, jobId)
+				time.Sleep(5e8)
+			case <-ctx.Done(): // 等待上级通知
+				log.Printf("pop from queue Done msg: %#v", ctx.Err())
+				return
+			}
+		}(i)
 	}
 }
 
 func (s *Service) consume(ctx context.Context)  {
 	for i := 0; i < ChanConsumerNum; i++ {
 
-		go func() {
+		go func(i int) {
 			defer func() {
 				s.wg.Done()
 			}()
@@ -64,7 +67,7 @@ func (s *Service) consume(ctx context.Context)  {
 			for {
 				select {
 				case jobId := <-ch:
-					fmt.Printf("#%s# <- chan\n", jobId)
+					fmt.Printf("consumer%d #%s# <- chan\n", i, jobId)
 					jobInfo, err := s.GetJob(jobId)
 					if err != nil || jobInfo == nil {
 						return
@@ -115,6 +118,6 @@ func (s *Service) consume(ctx context.Context)  {
 
 				time.Sleep(5e8)
 			}
-		}()
+		}(i)
 	}
 }
