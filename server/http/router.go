@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"net/http"
+	"time"
 )
 
 func Hello(c *gin.Context)  {
@@ -22,6 +23,8 @@ func Biz(c *gin.Context)  {
 		err error
 		job *model.PushJobReq
 	)
+	// 模拟延迟
+	time.Sleep(5 * time.Second)
 
 	if err = c.ShouldBindWith(&job, binding.JSON); err != nil {
 		Fail(c, err.Error())

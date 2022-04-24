@@ -27,8 +27,28 @@ func (s *Service) GetJob(jobId string) (j *model.PushJobReq, err error) {
 }
 
 func (s *Service) DelJob(jobId string) (err error) {
+	// 删除job pool
 	poolKey := s.GetJobPoolKey(jobId)
+
+	jobInfo, err := s.dao.GetJob(poolKey)
+	if err != nil {
+		return
+	}
+
 	err = s.dao.DelJob(poolKey)
+	if err != nil {
+		// TODO 删除失败
+	}
+
+	if jobInfo.TTR > 0 {
+		// 删除ttr bucket
+		ttrBucketName := s.GetTtrBucket(jobInfo.Id)
+		err = s.RemoveBucketJob(ttrBucketName, jobInfo.Id)
+		if err != nil {
+			// TODO 删除失败
+		}
+	}
+
 	return
 }
 

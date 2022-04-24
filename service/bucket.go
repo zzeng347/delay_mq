@@ -30,6 +30,7 @@ func InitBucket(ctx context.Context, s *Service)  {
 		// Init ticker
 		go InitTicker(ctx, bucketName, s)
 	}
+	//fmt.Println(bucketName)
 }
 
 func GetBucketName(key string, num int) string {
