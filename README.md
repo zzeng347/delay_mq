@@ -22,6 +22,7 @@
 3. ~~日志组件~~
    * 按天分割
 4. 消费者
+5. http client
 5. 消费次数限制
 6. ack api
 7. delete api

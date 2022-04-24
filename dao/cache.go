@@ -20,6 +20,11 @@ func (dao *Dao) GetJob(key string) (j *model.PushJobReq, err error) {
 	return j, nil
 }
 
+func (dao *Dao) DelJob(key string) (err error) {
+	err = dao.Redis.Del(key).Err()
+	return
+}
+
 func (dao *Dao) SetJob(key string, job *model.PushJobReq) (err error) {
 	jobJson, err := json.Marshal(job)
 	if err != nil {

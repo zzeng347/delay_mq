@@ -26,6 +26,12 @@ func (s *Service) GetJob(jobId string) (j *model.PushJobReq, err error) {
 	return
 }
 
+func (s *Service) DelJob(jobId string) (err error) {
+	poolKey := s.GetJobPoolKey(jobId)
+	err = s.dao.DelJob(poolKey)
+	return
+}
+
 func (s *Service) PushJob(job *model.PushJobReq) error {
 	// 验证job_id唯一性
 	jobInfo, err := s.GetJob(job.Id)

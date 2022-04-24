@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"delay_mq_v2/model"
+	"encoding/json"
 	"fmt"
 	"log"
 	"time"
@@ -9,6 +11,7 @@ import (
 
 const (
 	ChanConsumerNum = 100
+	ConsumerUrl = "http://127.0.0.1:8112/biz"
 )
 
 var ch chan string
@@ -61,6 +64,7 @@ func (s *Service) consume(ctx context.Context)  {
 			for {
 				select {
 				case jobId := <-ch:
+					fmt.Printf("#%s# <- chan\n", jobId)
 					jobInfo, err := s.GetJob(jobId)
 					if err != nil || jobInfo == nil {
 						return
@@ -73,11 +77,37 @@ func (s *Service) consume(ctx context.Context)  {
 						err = s.PushToBucket(ttrBucketName, timestamp, jobInfo.Id)
 						if err != nil {
 							// TODO 错误处理
+							log.Printf("push to bucket err#%s\n", err.Error())
 						}
 					}
 
 					// 推送给业务方
-					fmt.Printf("#%s# <- chan\n", jobId)
+					body, err := s.HttpClient.Post(ConsumerUrl, jobInfo, "application/json; charset=utf-8")
+					if err != nil {
+						log.Printf("读取body错误#%s", err.Error())
+						return
+					}
+
+					reply := &model.Reply{}
+					err = json.Unmarshal(body, reply)
+					if err != nil {
+						log.Printf("解析json失败#%s", err.Error())
+						return
+					}
+
+					fmt.Printf("post biz res body#%v\n", string(body))
+					fmt.Printf("reply#%d\n", reply.Code)
+
+					if reply.Code == 1 {
+						// 消费成功 删除job
+						err = s.DelJob(jobId)
+						if err != nil {
+							log.Printf("del job err#%s\n", err.Error())
+						}
+						fmt.Println("del job success")
+					}
+
+					return
 				case <-ctx.Done(): // 等待上级通知
 					log.Printf("consume Done msg: %#v", ctx.Err())
 					return

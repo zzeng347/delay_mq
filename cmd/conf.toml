@@ -1,5 +1,5 @@
 [redis]
-host="192.168.11.80"
+host="192.168.10.3"
 port="6379"
 password=""
 db=0
@@ -13,6 +13,11 @@ bucket_time=5000000000
 
 [http]
 address="0.0.0.0:8112"
+
+[http_client]
+max_idle_conns=50
+idle_conn_timeout=5000000000
+timeout=5000000000
 
 [rpc]
 address="0.0.0.0:8972"

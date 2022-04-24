@@ -17,6 +17,21 @@ func Hello(c *gin.Context)  {
 	})
 }
 
+func Biz(c *gin.Context)  {
+	var (
+		err error
+		job *model.PushJobReq
+	)
+
+	if err = c.ShouldBindWith(&job, binding.JSON); err != nil {
+		Fail(c, err.Error())
+		return
+	}
+
+	Success(c, job)
+	return
+}
+
 func Push(c *gin.Context) {
 	var (
 		err error

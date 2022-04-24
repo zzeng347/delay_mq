@@ -18,6 +18,7 @@ var (
 type Config struct {
 	REDIS		*redis.Config
 	HTTP		*http.Config
+	HTTPCLIENT	*http.ClientConfig
 }
 
 
@@ -29,6 +30,7 @@ func Init() error {
 	Conf = new(Config)
 	redisConf := new(redis.Config)
 	httpConf := new(http.Config)
+	httpClientConf := new(http.ClientConfig)
 
 	viper.SetConfigType("toml")
 	viper.AutomaticEnv()
@@ -59,9 +61,15 @@ func Init() error {
 	// http
 	httpConf.Address = viper.GetString("http.address")
 
+	// http client
+	httpClientConf.MaxIdleConns = viper.GetInt("http_client.max_idle_conns")
+	httpClientConf.IdleConnTimeout = viper.GetDuration("http_client.idle_conn_timeout")
+	httpClientConf.Timeout = viper.GetDuration("http_client.timeout")
+
 	// Conf assign
 	Conf.REDIS = redisConf
 	Conf.HTTP = httpConf
+	Conf.HTTPCLIENT = httpClientConf
 
 	return nil
 }

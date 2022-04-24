@@ -49,6 +49,7 @@ func InitRouter() *gin.Engine {
 	r.POST("/pop", Pop)
 	r.POST("/finish", Finish)
 	r.POST("/delete", Delete)
+	r.POST("/biz", Biz)
 
 	return r
 }
