@@ -19,6 +19,7 @@ type Config struct {
 	REDIS		*redis.Config
 	HTTP		*http.Config
 	HTTPCLIENT	*http.ClientConfig
+	//QUEUE	*service.QueueConfig
 }
 
 
@@ -31,6 +32,7 @@ func Init() error {
 	redisConf := new(redis.Config)
 	httpConf := new(http.Config)
 	httpClientConf := new(http.ClientConfig)
+	//queueConf := new(service.QueueConfig)
 
 	viper.SetConfigType("toml")
 	viper.AutomaticEnv()
@@ -66,10 +68,14 @@ func Init() error {
 	httpClientConf.IdleConnTimeout = viper.GetDuration("http_client.idle_conn_timeout")
 	httpClientConf.Timeout = viper.GetDuration("http_client.timeout")
 
+	// queue
+	//queueConf.ExecerUrl = viper.GetString("queue.execer_url")
+
 	// Conf assign
 	Conf.REDIS = redisConf
 	Conf.HTTP = httpConf
 	Conf.HTTPCLIENT = httpClientConf
+	//Conf.QUEUE = queueConf
 
 	return nil
 }

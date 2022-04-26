@@ -15,6 +15,7 @@ type Service struct {
 	Redis			*goredis.Client
 	HttpClient		*http.Client
 	wg				sync.WaitGroup
+	ch				chan string
 }
 
 var s *Service
@@ -25,6 +26,7 @@ func New(c *conf.Config) *Service {
 		c:				c,
 		dao:			dao.New(c),
 		HttpClient:		http.NewHttpClient(c.HTTPCLIENT),
+		ch: make(chan string, 1000),
 	}
 	s.Redis = s.dao.Redis
 	return s
@@ -34,6 +36,14 @@ func (s *Service) Run(ctx context.Context)  {
 	// init bucket
 	go InitBucket(ctx, s)
 
-	// init consumer
-	go s.InitConsumer(ctx)
+	// init queue
+	go s.InitQueue(ctx)
+
+	// 取通道job推送给业务方
+	go s.InitConsume(ctx)
+}
+
+func (s *Service) Close() {
+	defer s.wg.Wait()
+	//s.dao.Redis.Close()
 }

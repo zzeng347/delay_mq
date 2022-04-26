@@ -18,11 +18,11 @@ var (
 // InitTicker 根据bucket数量启动相应ticker进行扫描
 func InitTicker(ctx context.Context, bucketName string, s *Service)  {
 	ticker := time.NewTicker(tickerDefaultDuration)
+	s.wg.Add(1)
 	defer func() {
 		s.wg.Done()
 		ticker.Stop()
 	}()
-	s.wg.Add(1)
 
 	for {
 		select {

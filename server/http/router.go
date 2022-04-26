@@ -9,13 +9,26 @@ import (
 )
 
 func Hello(c *gin.Context)  {
-	data := make(map[string]interface{})
-	data["key"] = "value"
-	c.JSON(http.StatusOK, gin.H{
-		"code" : 200,
-		"msg" : "ok",
-		"data" : data,
+	data := `{"key": "value"}`
+	c.JSON(http.StatusOK, JSON{
+		Code: ErrorCode,
+		Message : "error test",
+		Data: data,
 	})
+
+	return
+}
+
+func JsonRaw(c *gin.Context)  {
+	data := `{"key": "value"}`
+	Success(c, data)
+	return
+}
+
+func Map(c *gin.Context)  {
+	data := map[string]string{"key": "value"}
+	Success(c, data)
+	return
 }
 
 func Biz(c *gin.Context)  {
@@ -24,13 +37,14 @@ func Biz(c *gin.Context)  {
 		job *model.PushJobReq
 	)
 	// 模拟延迟
-	time.Sleep(5 * time.Second)
+	time.Sleep(3 * time.Second)
 
 	if err = c.ShouldBindWith(&job, binding.JSON); err != nil {
 		Fail(c, err.Error())
 		return
 	}
-
+	//Fail(c, "error test")
+	//return
 	Success(c, job)
 	return
 }

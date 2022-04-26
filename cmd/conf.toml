@@ -1,5 +1,5 @@
 [redis]
-host="192.168.10.3"
+host="192.168.11.53"
 port="6379"
 password=""
 db=0
@@ -22,3 +22,6 @@ timeout=5000000000
 [rpc]
 address="0.0.0.0:8972"
 network="tcp"
+
+[queue]
+execer_url="0.0.0.0:8112"

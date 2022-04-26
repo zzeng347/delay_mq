@@ -50,6 +50,8 @@ func InitRouter() *gin.Engine {
 	r.POST("/finish", Finish)
 	r.POST("/delete", Delete)
 	r.POST("/biz", Biz)
+	r.POST("/json_raw", JsonRaw)
+	r.POST("/map", Map)
 
 	return r
 }

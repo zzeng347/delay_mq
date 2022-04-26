@@ -20,9 +20,15 @@ func (s *Service) GetJobPoolKey(key string) string {
 	return fmt.Sprintf("%s%s", JobPoolKey, key)
 }
 
-func (s *Service) GetJob(jobId string) (j *model.PushJobReq, err error) {
+func (s *Service) GetJob(jobId string) (j *model.JobResp, err error) {
 	poolKey := s.GetJobPoolKey(jobId)
 	j, err = s.dao.GetJob(poolKey)
+	return
+}
+
+func (s *Service) SetJob(j *model.JobResp) (err error) {
+	poolKey := s.GetJobPoolKey(j.Id)
+	err = s.dao.SetJob(poolKey, j)
 	return
 }
 
@@ -30,7 +36,7 @@ func (s *Service) DelJob(jobId string) (err error) {
 	// 删除job pool
 	poolKey := s.GetJobPoolKey(jobId)
 
-	jobInfo, err := s.dao.GetJob(poolKey)
+	jobResp, err := s.dao.GetJob(poolKey)
 	if err != nil {
 		return
 	}
@@ -40,10 +46,10 @@ func (s *Service) DelJob(jobId string) (err error) {
 		// TODO 删除失败
 	}
 
-	if jobInfo.TTR > 0 {
+	if jobResp.TTR > 0 {
 		// 删除ttr bucket
-		ttrBucketName := s.GetTtrBucket(jobInfo.Id)
-		err = s.RemoveBucketJob(ttrBucketName, jobInfo.Id)
+		ttrBucketName := s.GetTtrBucket(jobResp.Id)
+		err = s.RemoveBucketJob(ttrBucketName, jobResp.Id)
 		if err != nil {
 			// TODO 删除失败
 		}
@@ -68,19 +74,24 @@ func (s *Service) PushJob(job *model.PushJobReq) error {
 		return errors.New("job id exist")
 	}
 
+	jobResp := &model.JobResp{
+		PushJobReq: *job,
+		RetryCount: 0,
+	}
+
 	// hash job_id get bucket name
-	bucketName := s.GetBucket(job.Id)
+	bucketName := s.GetBucket(jobResp.Id)
 	fmt.Printf("push to bucket name#%s\n", bucketName)
 
 	// set job pool
-	poolKey := s.GetJobPoolKey(job.Id)
-	err = s.dao.SetJob(poolKey, job)
+	poolKey := s.GetJobPoolKey(jobResp.Id)
+	err = s.dao.SetJob(poolKey, jobResp)
 	if err != nil {
 		return err
 	}
 
 	// push bucket
-	timestamp := job.Delay + time.Now().Unix()
-	err = s.PushToBucket(bucketName, timestamp, job.Id)
+	timestamp := jobResp.Delay + time.Now().Unix()
+	err = s.PushToBucket(bucketName, timestamp, jobResp.Id)
 	return err
 }

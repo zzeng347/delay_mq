@@ -34,8 +34,10 @@ func main() {
 		s := <-c
 		log.Printf("dmq service get a signal %s", s.String())
 		switch s {
-		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGINT:
+		case syscall.SIGQUIT, syscall.SIGTERM, syscall.SIGSTOP, syscall.SIGINT:
+			time.Sleep(time.Second)
 			cancel()
+			srv.Close()
 			log.Printf("dmq service exit")
 			time.Sleep(time.Second)
 			return

@@ -23,7 +23,6 @@
    * 按天分割
 4. ~~消费者~~
 5. ~~http client~~
-5. 消费次数限制
-5. container参数验证
-6. ack api
-7. delete api
+5. ~~消费次数限制~~
+5. ~~container参数验证~~
+6. blpop会影响安全退出，暂时用lpop

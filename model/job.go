@@ -1,11 +1,8 @@
 package model
 
 type JobResp struct {
-	Container string `json:"container"`
-	Id    string `json:"id"`
-	Delay int64  `json:"delay"`
-	TTR   int64  `json:"ttr"`
-	Body  string `json:"body"`
+	PushJobReq
+	RetryCount  int64 `json:"retry_count"`
 }
 
 type PushJobReq struct {
@@ -14,6 +11,7 @@ type PushJobReq struct {
 	Delay int64  `json:"delay" binding:"required,gte=1"` // 延迟时间, 秒
 	TTR   int64  `json:"ttr"`
 	Body  string `json:"body" binding:"required"`
+	Route string `json:"route" binding:"required"`
 }
 
 type PopJob struct {

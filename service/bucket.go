@@ -9,8 +9,8 @@ import (
 const (
 	BucketKey    = "dmq:bucket:"
 	TtrBucketKey = "dmq:ttr_bucket:"
-	BucketNum    = 5
-	TtrBucketNum = 5
+	BucketNum    = 2
+	TtrBucketNum = 2
 )
 
 type Bucket struct {

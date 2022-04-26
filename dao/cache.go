@@ -8,7 +8,7 @@ import (
 	"github.com/go-redis/redis"
 )
 
-func (dao *Dao) GetJob(key string) (j *model.PushJobReq, err error) {
+func (dao *Dao) GetJob(key string) (j *model.JobResp, err error) {
 	val, err := dao.Redis.Get(key).Result()
 	if err != nil {
 		return nil, err
@@ -25,7 +25,7 @@ func (dao *Dao) DelJob(key string) (err error) {
 	return
 }
 
-func (dao *Dao) SetJob(key string, job *model.PushJobReq) (err error) {
+func (dao *Dao) SetJob(key string, job *model.JobResp) (err error) {
 	jobJson, err := json.Marshal(job)
 	if err != nil {
 		return err
@@ -55,7 +55,12 @@ func (dao *Dao) RemoveInBucket(bucket string, jobId string) (err error) {
 	return
 }
 
-func (dao *Dao) PopQueue(queue string) (jobIds []string, err error) {
+func (dao *Dao) BLPopQueue(queue string) (jobIds []string, err error) {
 	jobIds, err = dao.Redis.BLPop(0, queue).Result()
+	return
+}
+
+func (dao *Dao) LPopQueue(queue string) (jobId string, err error) {
+	jobId, err = dao.Redis.LPop(queue).Result()
 	return
 }
