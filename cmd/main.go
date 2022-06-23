@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"delay_mq_v2/conf"
+	"delay_mq_v2/server/grpc/server"
 	"delay_mq_v2/server/http"
 	"delay_mq_v2/service"
 	"fmt"
@@ -27,6 +28,7 @@ func main() {
 	srv = service.New(conf.Conf)
 	go srv.Run(ctx)
 	go http.Start(conf.Conf, srv)
+	go server.RunRpcServer(conf.Conf, srv)
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)

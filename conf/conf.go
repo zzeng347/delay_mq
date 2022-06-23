@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"delay_mq_v2/library/cache/redis"
 	"delay_mq_v2/library/net/http"
+	"delay_mq_v2/server/grpc/config"
 	"flag"
 	"fmt"
 	"github.com/spf13/viper"
@@ -19,6 +20,7 @@ type Config struct {
 	REDIS		*redis.Config
 	HTTP		*http.Config
 	HTTPCLIENT	*http.ClientConfig
+	RPC			*config.RPCConfig
 	//QUEUE	*service.QueueConfig
 }
 
@@ -32,6 +34,7 @@ func Init() error {
 	redisConf := new(redis.Config)
 	httpConf := new(http.Config)
 	httpClientConf := new(http.ClientConfig)
+	rpcConf := new(config.RPCConfig)
 	//queueConf := new(service.QueueConfig)
 
 	viper.SetConfigType("toml")
@@ -71,10 +74,15 @@ func Init() error {
 	// queue
 	//queueConf.ExecerUrl = viper.GetString("queue.execer_url")
 
+	// rpc
+	rpcConf.Network = viper.GetString("rpc.network")
+	rpcConf.Address = viper.GetString("rpc.address")
+
 	// Conf assign
 	Conf.REDIS = redisConf
 	Conf.HTTP = httpConf
 	Conf.HTTPCLIENT = httpClientConf
+	Conf.RPC = rpcConf
 	//Conf.QUEUE = queueConf
 
 	return nil
