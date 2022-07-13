@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package delay;
+option go_package ="server/grpc/proto/delay";
+
+// 导入google/api/annotations.proto
+import "google/api/annotations.proto";
+
+service delay {
+  rpc RpcServerTest(Req) returns (Replay) {
+    // 这里添加了google.api.http注释
+    option (google.api.http) = {
+      post: "/v1/example/echo"
+      body: "*"
+    };
+  }
+}
+
+message Req {
+  string id = 1;
+}
+
+message Replay {
+  int32 code = 1;
+  string message = 2;
+}

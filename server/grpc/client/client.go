@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
+	"delay_mq_v2/server/grpc/proto/delay"
 	"fmt"
 
-	pb "delay_mq_v2/server/grpc/proto"
 	"google.golang.org/grpc"
 )
 
@@ -16,11 +16,11 @@ func main() {
 	}
 	defer conn.Close()
 
-	c := pb.NewDelayClient(conn)
+	c := delay.NewDelayClient(conn)
 	// 调用服务端
 
 	// test
-	r, err := c.RpcServerTest(context.Background(), &pb.Req{Id: "job_id:1111"})
+	r, err := c.RpcServerTest(context.Background(), &delay.Req{Id: "job_id:1111"})
 	if err != nil {
 		fmt.Printf("test failed: %v", err)
 	} else {
