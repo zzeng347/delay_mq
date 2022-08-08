@@ -1,4 +1,4 @@
-##### 项目规范
+### 项目规范
 1. cmd: 放main.go和配置文件, 作为启动入口
 2. conf: 放配置文件对应的golang struct, 使用的是toml
 3. model: 放结构体, 比如Http参数转换用的struct, DB存储对应的struct, 各层之间传递用的struct
@@ -6,6 +6,9 @@
 5. http: 提供http服务, 主要是提供协议转换, 聚合. 逻辑还是再service层做.
 6. service: 提供服务和逻辑实现.
 7. grpc: 提供rpc服务.
+
+### 泳道图
+![img.png](img.png)
 
 ### 队列查询命令
 1. bucket
